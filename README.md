@@ -185,6 +185,16 @@ Example Nginx Configuration
     location / {
         proxy_pass http://127.0.0.1:8082;
         ....
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        ....
     } 
 ~~~
 
+This setup ensures:
+
+HTTPS terminated at Nginx
+
+Zero-Trust-Lite receives the true client IP for session & whitelist logic
+
+Preserves X-Forwarded-For chain for multi-proxy environments.
