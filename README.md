@@ -25,7 +25,7 @@ Instead:
 2. Configure this middleware:  
    `token = "<your token>"`
 3. Visit your personal TOTP page:  
-   `https://ipsafev2.537233.xyz/<folder>/totp?token=<your token>`
+   `https://ipsafev2.537233.xyz/yourpath/totp?token=yourtoken`
 4. Enter the displayed TOTP to log in
 
 This ensures:
