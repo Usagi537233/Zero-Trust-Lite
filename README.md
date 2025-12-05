@@ -1,2 +1,190 @@
 # Zero-Trust-Lite
-A lightweight Zero Trust middleware that integrates TOTP authentication with IP-based trusted session extension.
+
+A lightweight Zero Trust middleware providing **TOTP verification** + **trusted IP long session**, designed for self-hosted services, internal dashboards, and private tools.
+
+Unlike normal TOTP implementations, this project uses a **remote TOTP provider binding model**:
+
+> **TOTP is generated at:**  
+> Users must create a token and visit:
+> https://ipsafev2.537233.xyz/  
+> using a user-owned `token`, shared by both the remote TOTP page and this middleware.
+> https://ipsafev2.537233.xyz/<folder>/totp?token=<your token>
+
+
+No implicit network trust. No backend modification. Works as a reverse proxy in front of any HTTP service.
+
+---
+
+## ✨ Core Design
+
+### 🔐 Remote TOTP Binding
+Users do not run local authenticator apps.  
+Instead:
+
+1. Create a random `token`
+2. Configure this middleware:  
+   `token = "<your token>"`
+3. Visit your personal TOTP page:  
+   `https://ipsafev2.537233.xyz/<folder>/totp?token=<your token>`
+4. Enter the displayed TOTP to log in
+
+This ensures:
+- **Single source of truth**
+- **Token consistency**
+- **Remote generator control**
+- **No seed leakage to clients**
+
+### 🕗 Trusted IP Long Session
+IP whitelist is **not bypass**.  
+It only extends session lifetime after successful TOTP:
+
+- Untrusted IP: short session
+- Trusted IP: long session
+- First access always requires TOTP
+
+> **IP reduces friction, not the security boundary.**
+
+---
+
+## ✨ Features
+
+### 🎯 Zero Trust Lite Model
+- **TOTP as the core trust mechanism**
+- No implicit network trust
+- Every access path is verified
+- Short session validity by default
+
+### 🔐 Strong Authentication
+- RFC 6238 TOTP implementation
+- HMAC-SHA1
+- Time drift tolerant
+- 8 digit
+
+### 🕗 Trusted Session Extension
+For known IP addresses (e.g. office, VPN exit, home IP), the system can:
+- Extend session lifetime
+- Reduce manual authentication friction
+- Still require initial TOTP verification
+
+> **IP whitelist is NOT used as a trust bypass.**  
+> It is only a **risk-based optimization** mechanism.
+
+### 🧱 Middleware Architecture
+- Works as a **reverse proxy**
+- Fronts any local HTTP backend
+- Zero modification to backend apps
+- Stateless (optional state storage)
+
+---
+
+## 🏗️ Architecture
+
+```
+Client
+   |
+   |  (Access Attempt)
+   v
+Zero-Trust-Lite Middleware
+   |
+   |-- Check Session
+   |      |-- Valid? → Proxy to backend
+   |
+   |-- Check IP Trusted
+   |      |-- Yes → Issue extended session
+   |
+   |-- Challenge
+          |-- Render TOTP page
+          |-- Verify TOTP
+          |-- Issue session cookie
+          |-- Redirect to backend
+   |
+Backend Service (any HTTP app)
+```
+
+---
+
+## 🔒 Security Model
+
+### Trust Assumptions
+- Backend should **not** be exposed directly
+- Front layer is the **only entry point**
+- No IP trust without TOTP validation
+- Trusted IPs only affect session duration
+
+### Threat Considerations
+Defends against:
+- Credential guessing
+- Unauthorized local access
+- Session replay (time-bound)
+- Direct access bypass attempts
+
+Not a full Zero Trust replacement for:
+- MFA device binding
+- Device posture check
+- Continuous session scoring
+- Internal lateral movement detection
+
+This is “Lite” by design.
+
+---
+
+## 🧭 When Should You Use This?
+
+This middleware is ideal for:
+
+- personal projects
+- private dashboards
+- devops panels
+- CI/CD web consoles
+- database dashboards
+- tools running on VPS
+- limited user access
+
+Not recommended for:
+- enterprise SSO replacement
+- public internet login systems
+- anonymous multi-user platforms
+
+---
+
+## ⚙️ Configuration
+
+~~~
+zero-trust-lite:
+  -L string
+        Listen address (e.g. 0.0.0.0:8080) (default ":8080")
+  -backend string
+        Backend URL
+  -debug
+        Enable debug logging
+  -interval int
+        Update interval (default 300)
+  -key string
+        32-byte hex key
+  -listen string
+        Listen address (e.g. 0.0.0.0:8080) (default ":8080")
+  -local string
+        Local whitelist file
+  -session duration
+        Session duration (default 5m0s)
+  -token string
+        TOTP secret
+  -whitelisturl string
+        Whitelist URL
+  -wlurl string
+        Whitelist URL
+~~~
+
+Simple run examle
+~~~
+./zero-trust-lite -backend http://yourbackend -token YourToken -listen 127.0.0.1:8082 -wlurl https://ipsafe2.537233.xyz/yourpath/iplist?token=YourToken
+~~~
+
+Example Nginx Configuration
+~~~
+    location / {
+        proxy_pass http://127.0.0.1:8082;
+        ....
+    } 
+~~~
+
