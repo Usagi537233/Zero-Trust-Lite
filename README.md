@@ -8,7 +8,7 @@ Unlike normal TOTP implementations, this project uses a **remote TOTP provider b
 > Users must create a token and visit:
 > https://ipsafev2.537233.xyz/  
 > using a user-owned `token`, shared by both the remote TOTP page and this middleware.
-> https://ipsafev2.537233.xyz/<folder>/totp?token=<your token>
+> https://ipsafev2.537233.xyz/yourpath/totp?token=YourToken
 
 ![image](./image.png)
 
