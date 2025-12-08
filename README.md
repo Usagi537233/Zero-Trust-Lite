@@ -11,6 +11,7 @@ Unlike normal TOTP implementations, this project uses a **remote TOTP provider b
 > https://ipsafev2.537233.xyz/yourpath/totp?token=YourToken
 
 ![image](./image.png)
+![image1](./image1.png)
 
 No implicit network trust. No backend modification. Works as a reverse proxy in front of any HTTP service.
 
@@ -153,25 +154,35 @@ Not recommended for:
 ~~~
 zero-trust-lite:
   -L string
-        Listen address (e.g. 0.0.0.0:8080) (default ":8080")
+        Listen address
   -backend string
         Backend URL
+  -block string
+        Block duration (default "5m")
+  -c string
+        Multi-instance config file
+  -config string
+        Multi-instance config file
   -debug
         Enable debug logging
+  -failedtime string
+        Rate limit: 5/1m
   -interval int
-        Update interval (default 300)
+        Update interval (default 60)
   -key string
         32-byte hex key
   -listen string
-        Listen address (e.g. 0.0.0.0:8080) (default ":8080")
-  -local string
-        Local whitelist file
-  -session duration
-        Session duration (default 5m0s)
+        Listen address
+  -nmsession string
+        Normal session duration (default "30s")
   -token string
         TOTP secret
+  -whitelistlocal string
+        Local whitelist file
   -whitelisturl string
         Whitelist URL
+  -wlsession string
+        Whitelist session duration (default "5m")
   -wlurl string
         Whitelist URL
 ~~~
