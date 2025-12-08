@@ -1,0 +1,40 @@
+[
+  {
+    "name": "admin-panel",
+    "listen": ":8080",
+    "backend": "http://127.0.0.1:8081",
+    "token": "JBSWY3DPEHPK3PXP",
+    "key": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2",
+    "wlsession": "168h",
+    "nmsession": "15m",
+    "whitelisturl": "https://raw.githubusercontent.com/yourname/whitelist/main/allow.txt",
+    "whitelistlocal": "/opt/ztl/whitelist.txt",
+    "interval": 1800,
+    "failedtime": "5/2m",
+    "block": "30m"
+  },
+  {
+    "name": "k8s-dashboard",
+    "listen": ":8443",
+    "backend": "https://kubernetes-dashboard.kube-system.svc.cluster.local",
+    "token": "MZXW6YTBONNXI4DSN5XWG4TMMFXG433D",
+    "key": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcd",
+    "wlsession": "72h",
+    "nmsession": "10m",
+    "whitelisturl": "",
+    "whitelistlocal": "",
+    "interval": 3600,
+    "failedtime": "6/1m",
+    "block": "1h"
+  },
+  {
+    "name": "grafana",
+    "listen": ":3000",
+    "backend": "http://127.0.0.1:3001",
+    "token": "N5XSA33JONUWY3DP",
+    "wlsession": "720h",
+    "nmsession": "30m",
+    "failedtime": "8/5m",
+    "block": "2h"
+  }
+]
