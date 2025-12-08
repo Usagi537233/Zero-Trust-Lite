@@ -209,3 +209,13 @@ HTTPS terminated at Nginx
 Zero-Trust-Lite receives the true client IP for session & whitelist logic
 
 Preserves X-Forwarded-For chain for multi-proxy environments.
+
+### Using HTTP Authorization token:TOTP
+
+Zero-Trust-Lite supports one-line non-interactive login using HTTP headers:
+
+Example:
+
+~~~
+curl https://token:12345678@your-domain.com
+~~~
