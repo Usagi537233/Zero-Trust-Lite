@@ -210,6 +210,22 @@ Zero-Trust-Lite receives the true client IP for session & whitelist logic
 
 Preserves X-Forwarded-For chain for multi-proxy environments.
 
+## Reverse Proxy Notice
+
+If you deploy Zero-Trust-Lite behind a reverse proxy and only forward **a specific path** to it (instead of the entire domain), make sure the verification endpoint is also forwarded to Zero-Trust-Lite.
+
+For example, if you proxy only `/app` to Zero-Trust-Lite:
+
+- You **must proxy `/verify`** to Zero-Trust-Lite as well.
+- Otherwise, after verification, the browser redirects to `/verify`, but your proxy will send it to the backend app instead of Zero-Trust-Lite, causing a loop or failure.
+
+So your reverse proxy rules should forward **both**:
+- `/app` → Zero-Trust-Lite
+- `/verify` → Zero-Trust-Lite
+
+This applies to any path:
+
+
 ### Using HTTP Authorization token:TOTP
 
 Zero-Trust-Lite supports one-line non-interactive login using HTTP headers:
