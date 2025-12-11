@@ -13,26 +13,26 @@ echo "[EN] Fetching latest Zero-Trust-Lite release info..."
 echo "[CN] 获取最新 Zero-Trust-Lite Release 信息..."
 API_JSON=$(curl -s https://api.github.com/repos/Usagi537233/Zero-Trust-Lite/releases/latest)
 
-echo "[EN] Selecting asset exactly named 'Zero-Trust-Lite'..."
-echo "[CN] 精确匹配名字为 'Zero-Trust-Lite' 的 Linux 可执行文件..."
+echo "[EN] Selecting asset exactly named 'zero-trust-lite'..."
+echo "[CN] 精确匹配名字为 'zero-trust-lite' 的 Linux 可执行文件..."
 
 DOWNLOAD_URL=$(echo "$API_JSON" \
-    | jq -r '.assets[] | select(.name == "Zero-Trust-Lite") | .browser_download_url')
+    | jq -r '.assets[] | select(.name == "zero-trust-lite") | .browser_download_url')
 
 if [[ -z "$DOWNLOAD_URL" || "$DOWNLOAD_URL" == "null" ]]; then
-    echo "[EN] ERROR: No asset named 'Zero-Trust-Lite' found."
-    echo "[CN] 错误：未找到名为 'Zero-Trust-Lite' 的文件。"
+    echo "[EN] ERROR: No asset named 'zero-trust-lite' found."
+    echo "[CN] 错误：未找到名为 'zero-trust-lite' 的文件。"
     exit 1
 fi
 
-echo "[EN] Downloading Zero-Trust-Lite (directly into folder)..."
-echo "[CN] 正在下载 Zero-Trust-Lite（直接保存到目录）..."
+echo "[EN] Downloading zero-trust-lite (directly into folder)..."
+echo "[CN] 正在下载 zero-trust-lite（直接保存到目录）..."
 
 # ⭐ 关键：直接下载到当前目录，不指定文件名，不重命名
 curl -LO "$DOWNLOAD_URL"
 
 # 给 Zero-Trust-Lite 加执行权限
-chmod +x Zero-Trust-Lite
+chmod +x zero-trust-lite
 
 echo "[EN] Creating start.sh"
 echo "[CN] 创建 start.sh"
