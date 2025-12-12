@@ -16,6 +16,13 @@ No implicit network trust. No backend modification. Works as a reverse proxy in 
 
 ---
 
+DOC
+
+[利用Zero-Trust-Lite保护你的探针面板，Komari为例](https://github.com/Usagi537233/Zero-Trust-Lite/blob/main/doc/%E5%88%A9%E7%94%A8Zero-Trust-Lite%E4%BF%9D%E6%8A%A4%E4%BD%A0%E7%9A%84%E6%8E%A2%E9%92%88%E9%9D%A2%E6%9D%BF%EF%BC%8CKomari%E4%B8%BA%E4%BE%8B.md)
+
+
+---
+
 ## ✨ Core Design
 
 ### 🔐 Remote TOTP Binding
