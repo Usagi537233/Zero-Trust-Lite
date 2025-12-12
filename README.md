@@ -10,7 +10,13 @@ Unlike normal TOTP implementations, this project uses a **remote TOTP provider b
 > using a user-owned `token`, shared by both the remote TOTP page and this middleware.
 > https://ipsafev2.537233.xyz/yourpath/totp?token=YourToken
 
-![image](./image.png)![image1](./image1.png)
+![image](./image.png)
+
+![image1](./image1.png)
+
+![image2](./image2.png)
+
+## To thank the users who support our professional site [https://ipm.537233.xyz](https://ipm.537233.xyz), this interactive TOTP page was made just for them — thank you all!
 
 No implicit network trust. No backend modification. Works as a reverse proxy in front of any HTTP service.
 
