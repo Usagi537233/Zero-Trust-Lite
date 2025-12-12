@@ -38,7 +38,7 @@ Zero-Trust-Lite的config.json如下
 此时此刻我们还要去nginx改一下反代路径
 ~~~
     location / {
-        proxy_pass http://127.0.0.1:25775;
+        proxy_pass http://127.0.0.1:25775; #Zero-Trust-Lite的端口
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -55,6 +55,29 @@ Zero-Trust-Lite的config.json如下
         client_max_body_size 50M;
     }
 ~~~
+
+## 如果你小鸡是用的网页连接探针的话，Nginx记得加上
+~~~
+    location ~ ^/api/clients/(uploadBasicInfo|report)$ { 
+        proxy_pass http://127.0.0.1:25774; #默认的KomariDashboard端口
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+
+        # 禁用代理缓冲
+        proxy_buffering off;
+
+        # 允许大文件上传（50M）
+        client_max_body_size 50M;
+    }
+~~~
+### 跳过/api/clients/uploadBasicInfo和/api/clients/report的验证
+
 ## 如果你Nginx是在Cloudflare CDN 后面的话把
 ~~~
         proxy_set_header X-Real-IP $remote_addr;
@@ -66,6 +89,7 @@ Zero-Trust-Lite的config.json如下
         proxy_set_header X-Forwarded-For $http_cf_connecting_ip;
 ~~~
 ## 当然这个就按照你自己的实际情况来决定。
+
 
 # 4、
 ### 然后此时此刻，你再访问你的Komari探针页面将会出现验证，你再访问 https://ipsafev2.537233.xyz/yourpath/totp?token=yourtoken 后把得到的数字填入验证，就可以直接使用了，当然如果你访问用的IP
