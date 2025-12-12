@@ -2,7 +2,7 @@
 
 A lightweight Zero Trust middleware providing **TOTP verification** + **trusted IP long session**, designed for self-hosted services, internal dashboards, and private tools.
 
-Unlike normal TOTP implementations, this project uses a **remote TOTP provider binding model**:
+Unlike normal TOTP implementations, this project uses a **remote TOTP provider binding model** with a **private TOTP protocol**.  
 
 > **TOTP is generated at:**  
 > Users must create a token and visit:
@@ -63,16 +63,23 @@ It only extends session lifetime after successful TOTP:
 ## ✨ Features
 
 ### 🎯 Zero Trust Lite Model
-- **TOTP as the core trust mechanism**
+- **Private TOTP protocol as the core trust mechanism**
 - No implicit network trust
 - Every access path is verified
 - Short session validity by default
 
 ### 🔐 Strong Authentication
-- RFC 6238 TOTP implementation
-- HMAC-SHA1
+- Private TOTP protocol (ZTL internal)
 - Time drift tolerant
-- 8 digit
+- 8-digit dynamic code
+- Not compatible with third-party authenticator apps
+- Advantages:
+  - No exposure of seed or internal materials
+  - Cannot be imported, synced, or cloned externally
+  - Fully controlled and bound by the ZTL service
+  - Resistant to common TOTP-related leaks and misuse
+  - Lightweight and zero third-party dependency
+
 
 ### 🕗 Trusted Session Extension
 For known IP addresses (e.g. office, VPN exit, home IP), the system can:
