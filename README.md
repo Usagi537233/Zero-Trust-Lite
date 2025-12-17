@@ -176,6 +176,8 @@ Not recommended for:
 zero-trust-lite:
   -L string
         Listen address
+  -adminpath string
+        Admin path (random if empty)
   -backend string
         Backend URL
   -block string
@@ -195,7 +197,7 @@ zero-trust-lite:
   -listen string
         Listen address
   -nmsession string
-        Normal session duration (default "30s")
+        Normal session duration (also for requests) (default "30s")
   -token string
         TOTP secret
   -whitelistlocal string
