@@ -14,9 +14,9 @@ Unlike normal TOTP implementations, this project uses a **remote TOTP provider b
 
 ![image1](./image1.png)
 
-![image2](./image2.png)
-
 ![image3](./image3.png)
+
+![image2](./image2.png)
 
 ## To thank the users who support our professional site [https://ipm.537233.xyz](https://ipm.537233.xyz), this interactive TOTP page was made just for them — thank you all!
 
