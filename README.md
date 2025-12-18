@@ -10,6 +10,8 @@ Unlike normal TOTP implementations, this project uses a **remote TOTP provider b
 > using a user-owned `token`, shared by both the remote TOTP page and this middleware.
 > https://ipsafev2.537233.xyz/yourpath/totp?token=YourToken
 
+## **Commitment to Availability:** If I ever decide to shut down the central auth service, I will release a **standalone offline tool**. This will allow you to generate real-time TOTP codes locally on your own machine, ensuring you can continue to use the system independently.
+
 ![image](./image.png?cache-bust=2)
 
 ![image1](./image1.png)
