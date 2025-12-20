@@ -20,6 +20,7 @@ Zero-Trust-Lite的config.json如下
     "backend": "http://127.0.0.1:25774",
     "token": "yourtoken",
     "key": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2",
+    "adminpath": "/youradminpanelpath",
     "wlsession": "168h", 
     "nmsession": "15m",
     "whitelisturl": "",
