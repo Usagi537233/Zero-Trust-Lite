@@ -16,7 +16,7 @@ Unlike normal TOTP implementations, this project uses a **remote TOTP provider b
 
 ![image1](./image1.png)
 
-![image3](./image3.png)
+![image3](./image3.png?cache-bust=2))
 
 ![image2](./image2.png)
 
