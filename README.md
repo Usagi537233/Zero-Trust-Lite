@@ -142,10 +142,10 @@ Defends against:
 - Unauthorized local access
 - Session replay (time-bound)
 - Direct access bypass attempts
+- Device posture check Lite
 
 Not a full Zero Trust replacement for:
 - MFA device binding
-- Device posture check
 - Continuous session scoring
 - Internal lateral movement detection
 
