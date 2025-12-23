@@ -12,7 +12,10 @@
     "whitelistlocal": "/opt/ztl/whitelist.txt",
     "interval": 1800,
     "failedtime": "5/2m",
-    "block": "30m"
+    "block": "30m",
+    "knockpath": "/yourpath1,/yourpath2,/yourpath3",
+    "knock_time_window": "45",
+    "knock_opentime": "600"
   },
   {
     "name": "grafana",
