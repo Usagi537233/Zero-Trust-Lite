@@ -16,7 +16,7 @@ Unlike normal TOTP implementations, this project uses a **remote TOTP provider b
 
 ![image1](./image1.png)
 
-![image3](./image3.png?cache-bust=2))
+![image3](./image3.png?cache-bust=2)
 
 ![image2](./image2.png)
 
@@ -71,6 +71,13 @@ It only extends session lifetime after successful TOTP:
 - No implicit network trust
 - Every access path is verified
 - Short session validity by default
+
+### 🔒 Path Knocking (Additional Access Sequence)
+- Requires a predefined sequence of hidden paths to be visited in the correct order after successful TOTP verification
+- Even with a valid TOTP, access is denied until the full knocking sequence is completed within the allowed time window
+- Fully configurable sequence, time window, and post-success validity period
+- Provides a second independent layer of defense against TOTP compromise or leakage
+- Extremely difficult to detect or brute-force due to silent 204 responses and no logging
 
 ### 🔐 Strong Authentication
 - Private TOTP protocol (ZTL internal)
