@@ -182,7 +182,7 @@ Not recommended for:
 ## ⚙️ Configuration
 
 ~~~
-zero-trust-lite:
+Usage of ./zero-trust-lite:
   -L string
         Listen address
   -adminpath string
@@ -203,6 +203,12 @@ zero-trust-lite:
         Update interval (default 60)
   -key string
         32-byte hex key
+  -knock_opentime string
+        Duration knock is valid after success in seconds
+  -knock_time_window string
+        Time window to complete all knocks in seconds
+  -knockpath string
+        Comma-separated knocking sequence paths (e.g. /a,/b,/c)
   -listen string
         Listen address
   -nmsession string
