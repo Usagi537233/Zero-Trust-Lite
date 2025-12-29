@@ -2,13 +2,20 @@
 
 A lightweight Zero Trust middleware providing **TOTP verification** + **trusted IP long session**, designed for self-hosted services, internal dashboards, and private tools.
 
-Unlike normal TOTP implementations, this project uses a **remote TOTP provider binding model** with a **private TOTP protocol**.  
+Unlike normal TOTP implementations, this project uses a **remote TOTP provider binding model** with a **private TOTP protocol** **Now you can use with basic TOTP protocol**.  
 
 > **TOTP is generated at:**  
 > Users must create a token and visit:
 > https://ipsafev2.537233.xyz/  
 > using a user-owned `token`, shared by both the remote TOTP page and this middleware.
 > https://ipsafev2.537233.xyz/yourpath/totp?token=YourToken
+
+> **Basic TOTP generated at:**
+> Users must create a token and visit:
+> https://ipsafev2.537233.xyz/  
+> using a user-owned `token`, get your Base32 Secret (Import TOTP Clients):.
+> https://ipsafev2.537233.xyz/yourpath/basictotp?token=YourToken
+> Then import your base32 secret to your 2fa apps.
 
 ## **Commitment to Availability:** If I ever decide to shut down the central auth service, I will release a **standalone offline tool**. This will allow you to generate real-time TOTP codes locally on your own machine, ensuring you can continue to use the system independently.
 
@@ -68,6 +75,7 @@ It only extends session lifetime after successful TOTP:
 
 ### 🎯 Zero Trust Lite Model
 - **Private TOTP protocol as the core trust mechanism**
+- **Now you can use with basic TOTP protocol**
 - No implicit network trust
 - Every access path is verified
 - Short session validity by default
@@ -82,8 +90,8 @@ It only extends session lifetime after successful TOTP:
 ### 🔐 Strong Authentication
 - Private TOTP protocol (ZTL internal)
 - Time drift tolerant
-- 8-digit dynamic code
-- Not compatible with third-party authenticator apps
+- 8-digit dynamic code or basic TOTP protocol
+- 8-digit code does not compatible with third-party authenticator apps,but basic TOTP protocol can use with other TOTP clients
 - Advantages:
   - No exposure of seed or internal materials
   - Cannot be imported, synced, or cloned externally
@@ -185,6 +193,7 @@ Not recommended for:
 Usage of ./zero-trust-lite:
   -L string
         Listen address
+  -V    Show version and exit
   -adminpath string
         Admin path (random if empty)
   -backend string
@@ -215,6 +224,11 @@ Usage of ./zero-trust-lite:
         Normal session duration (also for requests) (default "30s")
   -token string
         TOTP secret
+  -totp-mode string
+        TOTP mode: '8' = legacy 8-digit only, 'auto' = support both standard 6-digit and legacy 8-digit (default "8")
+  -v    Show version and exit
+  -version
+        Show version and exit
   -whitelistlocal string
         Local whitelist file
   -whitelisturl string
