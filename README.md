@@ -86,7 +86,7 @@ It only extends session lifetime after successful TOTP:
 - Fully configurable sequence, time window, and post-success validity period
 - Provides a second independent layer of defense against TOTP compromise or leakage
 - Extremely difficult to detect or brute-force due to silent 204 responses and no logging
-
+  
 ### 🔐 Strong Authentication
 - Private TOTP protocol (ZTL internal)
 - Time drift tolerant
@@ -98,7 +98,15 @@ It only extends session lifetime after successful TOTP:
   - Fully controlled and bound by the ZTL service
   - Resistant to common TOTP-related leaks and misuse
   - Lightweight and zero third-party dependency
-
+    
+### Path-Specific TOTP Authentication (PathTokens)
+- Support independent TOTP secrets for different URL paths or prefixes
+- Paths ending with `/` → **prefix matching** (recommended for protecting entire directories, e.g., `/admin/`)
+- Paths without trailing `/` → **exact matching**
+- Form-based login sessions are bound to the authorized path scope
+- Accessing other protected paths triggers re-authentication with the corresponding token
+- Basic Auth remains stateless and validates per-request path-specific tokens
+- Unmatched paths fall back to the global token (fully backward compatible)
 
 ### 🕗 Trusted Session Extension
 For known IP addresses (e.g. office, VPN exit, home IP), the system can:
@@ -163,7 +171,8 @@ Not a full Zero Trust replacement for:
 - MFA device binding
 - Continuous session scoring
 - Internal lateral movement detection
-
+- Path-level key isolation prevents compromise of one path from affecting others
+  
 This is “Lite” by design.
 
 ---
@@ -222,6 +231,8 @@ Usage of ./zero-trust-lite:
         Listen address
   -nmsession string
         Normal session duration (also for requests) (default "30s")
+  -pathtoken value
+        Path-specific TOTP token, format: /path/=SECRET (can be repeated)
   -token string
         TOTP secret
   -totp-mode string
@@ -270,5 +281,5 @@ Zero-Trust-Lite supports one-line non-interactive login using HTTP headers:
 Example:
 
 ~~~
-curl https://token:12345678@your-domain.com
+curl https://token:totpcode@your-domain.com
 ~~~
