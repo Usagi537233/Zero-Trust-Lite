@@ -16,7 +16,17 @@
     "block": "30m",
     "knockpath": "/yourpath1,/yourpath2,/yourpath3",
     "knock_time_window": "45",
-    "knock_opentime": "600"
+    "knock_opentime": "600",
+    "PathTokens": [
+      {
+        "path": "/admin/123",
+        "token": "12345678"
+      },
+      {
+        "path": "/admin/321",
+        "token": "87654321"
+      }
+    ]
   },
   {
     "name": "grafana",
