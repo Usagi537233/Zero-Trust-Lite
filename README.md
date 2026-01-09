@@ -102,9 +102,6 @@ It only extends session lifetime after successful TOTP:
 - **Advantages of Combined TOTP + Email Confirmation**
   - True complementary multi-factor: "something you have" (TOTP key in app) + "something you can access" (email inbox)
   - Mitigates risks from both TOTP key leakage and email compromise
-  - No seed exposure to clients
-  - Resistant to common MFA bypasses and leaks
-  - Lightweight with zero external dependencies
 
 ### Path-Specific TOTP Authentication (PathTokens)
 
