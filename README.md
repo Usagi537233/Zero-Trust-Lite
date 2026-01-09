@@ -42,22 +42,26 @@ DOC
 
 ## ✨ Core Design
 
-### 🔐 Remote TOTP Binding
-Users do not run local authenticator apps.  
-Instead:
+### 🔐 TOTP Binding
 
-1. Create a random `token`
+#### Remote Binding
+
+1. Create a random `token` in https://ipsafev2.537233.xyz
 2. Configure this middleware:  
    `token = "<your token>"`
 3. Visit your personal TOTP page:  
    `https://ipsafev2.537233.xyz/yourpath/totp?token=yourtoken`
 4. Enter the displayed TOTP to log in
 
-This ensures:
-- **Single source of truth**
-- **Token consistency**
-- **Remote generator control**
-- **No seed leakage to clients**
+Or you can run local authenticator apps.  
+
+#### local authenticator apps.
+using a user-owned token, get your Base32 Secret (Import TOTP Clients):
+
+ `https://ipsafev2.537233.xyz/yourpath/basictotp?token=YourToken `
+ 
+Then import your base32 secret to your 2fa apps.
+
 
 ### 🕗 Trusted IP Long Session
 IP whitelist is **not bypass**.  
