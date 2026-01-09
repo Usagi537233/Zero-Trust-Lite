@@ -24,7 +24,7 @@
     "smtp_port": 587,
     "smtp_user": "your-gmail@gmail.com",
     "smtp_pass": "your-app-password",
-    "smtp_from": "Zero-Trust-Lite <ztl@company.com>",
+    "smtp_from": "ztl@company.com",
     "smtp_tls": true,
     "PathTokens": [
       {
