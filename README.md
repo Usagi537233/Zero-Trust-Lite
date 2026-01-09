@@ -88,25 +88,35 @@ It only extends session lifetime after successful TOTP:
 - Extremely difficult to detect or brute-force due to silent 204 responses and no logging
   
 ### 🔐 Strong Authentication
-- Private TOTP protocol (ZTL internal)
-- Time drift tolerant
-- 8-digit dynamic code or basic TOTP protocol
-- 8-digit code does not compatible with third-party authenticator apps,but basic TOTP protocol can use with other TOTP clients
-- Advantages:
-  - No exposure of seed or internal materials
-  - Cannot be imported, synced, or cloned externally
-  - Fully controlled and bound by the ZTL service
-  - Resistant to common TOTP-related leaks and misuse
-  - Lightweight and zero third-party dependency
-    
+
+- **Standard TOTP Authentication** (Fully compatible with Google Authenticator, Microsoft Authenticator, Authy, and all third-party apps)
+- Time drift tolerant (±30 seconds)
+- Supports both standard 6-digit and legacy 8-digit codes (`totp_mode: "auto"` or `"8"`)
+- **Optional Email Secondary Confirmation** (Configurable globally or per path)
+  - After successful TOTP verification, a one-time confirmation link is sent via email
+  - User must click the link (valid for configurable TTL, default 15 minutes) to complete authentication
+  - Link is strictly bound to original client IP, requested path, and short-lived
+  - Provides strong defense against TOTP key compromise — even if the key is stolen, access requires email approval
+  - Fully configurable SMTP support (Gmail, Outlook, etc., with STARTTLS)
+  - Path-specific control via `PathTokens`: enable/disable independently and set custom recipient(s) per path
+- **Advantages of Combined TOTP + Email Confirmation**
+  - True complementary multi-factor: "something you have" (TOTP key in app) + "something you can access" (email inbox)
+  - Mitigates risks from both TOTP key leakage and email compromise
+  - No seed exposure to clients
+  - Resistant to common MFA bypasses and leaks
+  - Lightweight with zero external dependencies
+
 ### Path-Specific TOTP Authentication (PathTokens)
-- Support independent TOTP secrets for different URL paths or prefixes
+
+- Supports independent TOTP secrets for different URL paths or prefixes
 - Paths ending with `/` → **prefix matching** (recommended for protecting entire directories, e.g., `/admin/`)
 - Paths without trailing `/` → **exact matching**
 - Form-based login sessions are bound to the authorized path scope
 - Accessing other protected paths triggers re-authentication with the corresponding token
 - Basic Auth remains stateless and validates per-request path-specific tokens
 - Unmatched paths fall back to the global token (fully backward compatible)
+- **Per-path email secondary confirmation** (via `require_email_confirm` and `confirm_email` fields in `PathTokens`)
+  - Allows fine-grained policy: force email approval for sensitive paths (e.g., admin), disable for automated/API paths
 
 ### 🕗 Trusted Session Extension
 For known IP addresses (e.g. office, VPN exit, home IP), the system can:
@@ -199,7 +209,6 @@ Not recommended for:
 ## ⚙️ Configuration
 
 ~~~
-Usage of ./zero-trust-lite:
   -L string
         Listen address
   -V    Show version and exit
@@ -213,8 +222,14 @@ Usage of ./zero-trust-lite:
         Multi-instance config file
   -config string
         Multi-instance config file
+  -confirm-email string
+        Recipient email addresses for confirmation (comma-separated, e.g. admin@company.com,user2@example.com)
+  -confirm-ttl string
+        Confirmation link validity duration (e.g. 10m, 1h, default 15m) (default "15m")
   -debug
         Enable debug logging
+  -email-confirm
+        Require email confirmation after successful TOTP verification
   -failedtime string
         Rate limit: 5/1m
   -interval int
@@ -232,7 +247,19 @@ Usage of ./zero-trust-lite:
   -nmsession string
         Normal session duration (also for requests) (default "30s")
   -pathtoken value
-        Path-specific TOTP token, format: /path/=SECRET (can be repeated)
+        Path-specific config, format: /path/=SECRET[:require_email_confirm=true|false][:confirm_email=admin@example.com] (can be repeated)
+  -smtp-from string
+        Sender email address displayed in email (e.g. ZTL <ztl@company.com>)
+  -smtp-host string
+        SMTP server hostname (e.g. smtp.gmail.com)
+  -smtp-pass string
+        SMTP authentication password (use app password for Gmail)
+  -smtp-port int
+        SMTP server port (587 for STARTTLS, 465 for SSL) (default 587)
+  -smtp-tls
+        Use STARTTLS for SMTP connection (set false for no encryption) (default true)
+  -smtp-user string
+        SMTP authentication username (email address)
   -token string
         TOTP secret
   -totp-mode string
