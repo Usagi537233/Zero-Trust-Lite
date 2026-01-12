@@ -96,6 +96,10 @@ It only extends session lifetime after successful TOTP:
 - **Standard TOTP Authentication** (Fully compatible with Google Authenticator, Microsoft Authenticator, Authy, and all third-party apps)
 - Time drift tolerant (±30 seconds)
 - Supports both standard 6-digit and legacy 8-digit codes (`totp_mode: "auto"` or `"8"`)
+- **Multi-token support**  
+  **In version 0.1.6 and above**, multiple TOTP secrets are supported  
+  Use comma-separated format: `TOTPTOKEN1,TOTPTOKEN2,TOTPTOKEN3`  
+  Any one of the valid tokens in the list can be used to authenticate successfully
 - **Optional Email Secondary Confirmation** (Configurable globally or per path)
   - After successful TOTP verification, a one-time confirmation link is sent via email
   - User must click the link (valid for configurable TTL, default 15 minutes) to complete authentication
@@ -110,6 +114,10 @@ It only extends session lifetime after successful TOTP:
 ### Path-Specific TOTP Authentication (PathTokens)
 
 - Supports independent TOTP secrets for different URL paths or prefixes
+- **Multi-token support**  
+  **In version 0.1.6 and above**, multiple TOTP secrets are supported  
+  Use comma-separated format: `TOTPTOKEN1,TOTPTOKEN2,TOTPTOKEN3`  
+  Any one of the valid tokens in the list can be used to authenticate successfully
 - Paths ending with `/` → **prefix matching** (recommended for protecting entire directories, e.g., `/admin/`)
 - Paths without trailing `/` → **exact matching**
 - Form-based login sessions are bound to the authorized path scope
@@ -118,6 +126,28 @@ It only extends session lifetime after successful TOTP:
 - Unmatched paths fall back to the global token (fully backward compatible)
 - **Per-path email secondary confirmation** (via `require_email_confirm` and `confirm_email` fields in `PathTokens`)
   - Allows fine-grained policy: force email approval for sensitive paths (e.g., admin), disable for automated/API paths
+
+## IP Ban Notification
+
+Blocked IPs are added to the **ban list**. If SMTP is configured, a notification is sent when either the time since the last notification reaches `block-notify-interval` or the number of newly banned IPs reaches `block-notify-max-ips`.
+
+```
+-block-notify-interval 1m -block-notify-max-ips 100
+````
+
+> No SMTP configured = notifications are skipped.
+
+---
+
+## Circuit Breaker
+
+The circuit breaker is triggered when the total number of banned IPs reaches `circuit-max-ip`. While active, all authentication attempts (TOTP, Basic Auth, etc.) are rejected, except for whitelisted IPs. Protection lasts for `circuit-time` and resets automatically.
+
+```
+-circuit-max-ip 150 -circuit-time 30m
+```
+
+**Purpose:** Protects the service during large-scale attacks. Recommended values: 100–300 for normal use, 80–150 for higher security.
 
 ### 🕗 Trusted Session Extension
 For known IP addresses (e.g. office, VPN exit, home IP), the system can:
@@ -219,8 +249,16 @@ Not recommended for:
         Backend URL
   -block string
         Block duration (default "5m")
+  -block-notify-interval string
+        Min interval between block notification emails (e.g. 5m, 10m, 1h) (default "5m")
+  -block-notify-max-ips int
+        Max blocked IPs in buffer to trigger immediate notification (default 10)
   -c string
         Multi-instance config file
+  -circuit-max-ip int
+        Max blocked IPs to trigger global circuit break (0=disabled)
+  -circuit-time string
+        Circuit break duration after trigger (e.g. 30m, 1h, empty=until blocked IPs decrease)
   -config string
         Multi-instance config file
   -confirm-email string
@@ -262,7 +300,7 @@ Not recommended for:
   -smtp-user string
         SMTP authentication username (email address)
   -token string
-        TOTP secret
+        TOTPTOKEN (separate multiple with commas) e.g. TOTPTOKEN1,TOTPTOKEN2,TOTPTOKEN3
   -totp-mode string
         TOTP mode: '8' = legacy 8-digit only, 'auto' = support both standard 6-digit and legacy 8-digit (default "8")
   -v    Show version and exit
