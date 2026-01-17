@@ -2,7 +2,10 @@
 
 A lightweight Zero Trust middleware providing **TOTP verification** + **trusted IP long session**, designed for self-hosted services, internal dashboards, and private tools.
 
-Unlike normal TOTP implementations, this project uses a **remote TOTP provider binding model** with a **private TOTP protocol** **Now you can use with basic TOTP protocol**.  
+Unlike normal TOTP implementations, this project uses a **remote TOTP provider binding model** with a **private TOTP protocol**. **Now, starting from version 0.1.7, it also supports COTP** ([COTP Protocol](https://github.com/Usagi537233/COTP-Protocol)) for enhanced security.
+
+Let me know if you'd like any further adjustments!
+
 
 > **TOTP is generated at:**  
 > Users must create a token and visit:
@@ -16,6 +19,10 @@ Unlike normal TOTP implementations, this project uses a **remote TOTP provider b
 > using a user-owned `token`, get your Base32 Secret (Import TOTP Clients):.
 > https://ipsafev2.537233.xyz/yourpath/basictotp?token=YourToken
 > Then import your base32 secret to your 2fa apps.
+
+> **COTP Calculator Web at(**In version 0.1.7 and above**):**
+> [COTP Calculator](https://cotp.537233.xyz/)
+> If you a IPM user,you can access the your path/cotp ,just like https://ipm.537233.xyz/yourpath/cotp .
 
 ## **Commitment to Availability:** If I ever decide to shut down the central auth service, I will release a **standalone offline tool**. This will allow you to generate real-time TOTP codes locally on your own machine, ensuring you can continue to use the system independently.
 
@@ -41,6 +48,13 @@ DOC
 ---
 
 ## ✨ Core Design
+
+### 🔐 COTP Calculator **In version 0.1.7 and above**
+
+1. Click the **Copy COTP Challenge and Access Host** button in your ZTL web. This will copy both your challenge and host information.
+2. Next, go to the [COTP Calculator Web](https://cotp.537233.xyz/) and submit the token from your ZTL settings.
+3. The calculator will generate your COTP code. You can then copy this code and use it as your ZTL verification code.
+4. If you a IPM user,you can access the your path/cotp ,just like https://ipm.537233.xyz/yourpath/cotp .
 
 ### 🔐 TOTP Binding
 
@@ -69,7 +83,7 @@ It only extends session lifetime after successful TOTP:
 
 - Untrusted IP: short session
 - Trusted IP: long session
-- First access always requires TOTP
+- First access always requires TOTP or COTP(**In version 0.1.7 and above**)
 
 > **IP reduces friction, not the security boundary.**
 
@@ -111,11 +125,11 @@ It only extends session lifetime after successful TOTP:
   - True complementary multi-factor: "something you have" (TOTP key in app) + "something you can access" (email inbox)
   - Mitigates risks from both TOTP key leakage and email compromise
 
-### Path-Specific TOTP Authentication (PathTokens)
+### Path-Specific TOTP&COTP Authentication (PathTokens)
 
-- Supports independent TOTP secrets for different URL paths or prefixes
+- Supports independent TOTP&COTP secrets for different URL paths or prefixes
 - **Multi-token support**  
-  **In version 0.1.6 and above**, multiple TOTP secrets are supported  
+  **In version 0.1.6 and above**, multiple TOTP& COTP(**In version 0.1.7 and above**) tokens are supported  
   Use comma-separated format: `TOTPTOKEN1,TOTPTOKEN2,TOTPTOKEN3`  
   Any one of the valid tokens in the list can be used to authenticate successfully
 - Paths ending with `/` → **prefix matching** (recommended for protecting entire directories, e.g., `/admin/`)
@@ -197,7 +211,7 @@ Backend Service (any HTTP app)
 ### Trust Assumptions
 - Backend should **not** be exposed directly
 - Front layer is the **only entry point**
-- No IP trust without TOTP validation
+- No IP trust without TOTP or COTP(**In version 0.1.7 and above**) validation
 - Trusted IPs only affect session duration
 
 ### Threat Considerations
@@ -240,6 +254,12 @@ Not recommended for:
 ## ⚙️ Configuration
 
 ~~~
+Usage:
+ Single: ./zero-trust-lite -L :8080 -backend http://backend -token SECRET
+         -circuit-max-ip 50 -circuit-time 30m
+ Multi : ./zero-trust-lite -c config.json
+
+Detailed Flags:
   -L string
         Listen address
   -V    Show version and exit
@@ -250,21 +270,25 @@ Not recommended for:
   -block string
         Block duration (default "5m")
   -block-notify-interval string
-        Min interval between block notification emails (e.g. 5m, 10m, 1h) (default "5m")
+        Min interval between block notification emails (default "5m")
   -block-notify-max-ips int
         Max blocked IPs in buffer to trigger immediate notification (default 10)
   -c string
         Multi-instance config file
+  -challenge-ratelimit string
+        Rate limit for generating COTP challenges, format: requests/time window, e.g., 5/30s, 10/1m (default "5/30s")
   -circuit-max-ip int
         Max blocked IPs to trigger global circuit break (0=disabled)
   -circuit-time string
-        Circuit break duration after trigger (e.g. 30m, 1h, empty=until blocked IPs decrease)
+        Circuit break duration after trigger
   -config string
         Multi-instance config file
   -confirm-email string
-        Recipient email addresses for confirmation (comma-separated, e.g. admin@company.com,user2@example.com)
+        Recipient email addresses for confirmation
   -confirm-ttl string
-        Confirmation link validity duration (e.g. 10m, 1h, default 15m) (default "15m")
+        Confirmation link validity duration (default "15m")
+  -cotp-challenge-ttl duration
+        COTP challenge valid time (default 5m0s)
   -debug
         Enable debug logging
   -email-confirm
@@ -286,23 +310,23 @@ Not recommended for:
   -nmsession string
         Normal session duration (also for requests) (default "30s")
   -pathtoken value
-        Path-specific config, format: /path/=SECRET[:require_email_confirm=true|false][:confirm_email=admin@example.com] (can be repeated)
+        Path-specific config, format: /path=SECRET[:require_email_confirm=true|false][:confirm_email=admin@example.com] (can be repeated)
   -smtp-from string
-        Sender email address displayed in email (e.g. ZTL <ztl@company.com>)
+        Sender email address
   -smtp-host string
-        SMTP server hostname (e.g. smtp.gmail.com)
+        SMTP server hostname
   -smtp-pass string
-        SMTP authentication password (use app password for Gmail)
+        SMTP password
   -smtp-port int
-        SMTP server port (587 for STARTTLS, 465 for SSL) (default 587)
+        SMTP server port (default 587)
   -smtp-tls
-        Use STARTTLS for SMTP connection (set false for no encryption) (default true)
+        Use STARTTLS for SMTP connection (default true)
   -smtp-user string
-        SMTP authentication username (email address)
+        SMTP username
   -token string
         TOTPTOKEN (separate multiple with commas) e.g. TOTPTOKEN1,TOTPTOKEN2,TOTPTOKEN3
   -totp-mode string
-        TOTP mode: '8' = legacy 8-digit only, 'auto' = support both standard 6-digit and legacy 8-digit (default "8")
+        TOTP mode: 'auto' (standard TOTP 6-digit, 8-digit & COTP), '8' (8-digit & COTP), 'cotp' (COTP only) (default "8")
   -v    Show version and exit
   -version
         Show version and exit
