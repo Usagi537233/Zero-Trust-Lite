@@ -30,6 +30,8 @@
     "block_notify_max_ips": 100,
     "circuit_max_ip": 150,
     "circuit_time": "30m",
+    "cotp_challenge_ttl": "1m",
+    "challenge_ratelimit": "1/2s",
     "PathTokens": [
       {
         "path": "/admin/123",
